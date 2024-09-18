@@ -1,0 +1,22 @@
+name = "lucia-auth-backend"
+compatibility_date = "2024-09-18"
+compatibility_flags = [ "nodejs_compat" ]
+
+# [vars]
+# MY_VAR = "my-variable"
+
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "lucia-d1"
+database_id = "f8ea345b-90af-4181-b200-703de88db58d"
+
+# [ai]
+# binding = "AI"
