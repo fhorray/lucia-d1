@@ -1,6 +1,11 @@
 import { sql } from "drizzle-orm";
 import { timestamp } from "drizzle-orm/mysql-core";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
 import { generateId } from "lucia";
 
 export const users = sqliteTable("users", {
@@ -15,7 +20,10 @@ export const users = sqliteTable("users", {
   nickname: text("nickname"),
 });
 
-export const sessionTable = sqliteTable("sessions", {
+export type InsertUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;
+
+export const sessions = sqliteTable("sessions", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()
@@ -23,8 +31,8 @@ export const sessionTable = sqliteTable("sessions", {
   expiresAt: integer("expires_at").notNull(),
 });
 
-export type InsertUser = typeof users.$inferInsert;
-export type SelectUser = typeof users.$inferSelect;
+export type InsertSession = typeof sessions.$inferInsert;
+export type SelectSession = typeof sessions.$inferSelect;
 
 // POSTS
 export const posts = sqliteTable("posts", {
@@ -39,3 +47,21 @@ export const posts = sqliteTable("posts", {
 
 export type InsertPost = typeof posts.$inferInsert;
 export type SelectPost = typeof posts.$inferSelect;
+
+// VERIFICATION TOKENS
+export const verificationTokens = sqliteTable(
+  "verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  },
+  (verificationToken) => ({
+    compositePk: primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
+  })
+);
+
+export type InsertVFToken = typeof posts.$inferInsert;
+export type SelectVFToken = typeof posts.$inferSelect;

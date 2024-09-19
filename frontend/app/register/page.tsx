@@ -4,14 +4,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 interface FormValues {
   name: string;
+  nickname: string;
   email: string;
   password: string;
 }
 
-const SignUp: React.FC = () => {
+export default function Component() {
   const route = useRouter();
 
   const {
@@ -34,111 +46,115 @@ const SignUp: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Erro ao criar a conta");
+        throw new Error("Erro ao fazer login");
       }
 
-      route.push("/login");
+      route.push("/");
 
       const result = await response.json();
-      console.log("Usuário criado com sucesso:", result);
+      console.log("Login realizado com sucesso:", result);
     } catch (error) {
       console.error("Erro:", error);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow-md space-y-4"
-      >
-        <h2 className="text-xl font-bold mb-4 text-black">
-          Cadastro de Usuário
-        </h2>
-
-        <div>
-          <label
-            className="block font-medium text-sm  text-black"
-            htmlFor="name"
-          >
-            Nome
-          </label>
-          <input
-            id="name"
-            {...register("name", { required: "Nome é obrigatório" })}
-            className="border p-2 w-full  text-black"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            className="block font-medium text-sm  text-black"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register("email", {
-              required: "Email é obrigatório",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Email inválido",
-              },
-            })}
-            className="border p-2 w-full  text-black"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            className="block font-medium text-sm  text-black"
-            htmlFor="password"
-          >
-            Senha
-          </label>
-          <input
-            id="password"
-            type="password"
-            {...register("password", {
-              required: "Senha é obrigatória",
-              minLength: {
-                value: 3,
-                message: "Senha deve ter no mínimo 6 caracteres",
-              },
-            })}
-            className="border p-2 w-full  text-black"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full"
-        >
-          Cadastrar
-        </button>
-        <Link href={"/login"}>
-          {" "}
-          <button
-            type="button"
-            className="bg-blue-100 p-2 rounded w-full text-blue-300"
-          >
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 to-purple-100">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">
             Login
-          </button>
-        </Link>
-      </form>
+          </CardTitle>
+          <CardDescription className="text-center">
+            Entre com sua conta para acessar o sistema
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                placeholder="Seu nome"
+                {...register("name", {
+                  required: "Nome é obrigatório",
+                })}
+              />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nickname">Nickname</Label>
+              <Input
+                id="nickname"
+                placeholder="Seu nickname"
+                {...register("nickname", {
+                  required: "Nickname é obrigatório",
+                })}
+              />
+              {errors.nickname && (
+                <p className="text-sm text-red-500">
+                  {errors.nickname.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                {...register("email", {
+                  required: "Email é obrigatório",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Email inválido",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                {...register("password", {
+                  required: "Senha é obrigatória",
+                  minLength: {
+                    value: 6,
+                    message: "Senha deve ter no mínimo 6 caracteres",
+                  },
+                })}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <Button type="submit" className="w-full">
+              Entrar
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-4">
+          <Button variant="outline" className="w-full" asChild>
+            <Link href="/register">Criar Conta</Link>
+          </Button>
+          <Button variant="outline" className="w-full" asChild>
+            <a
+              href="http://localhost:3001/v1/auth/google"
+              className="flex items-center justify-center"
+            >
+              Entrar com Google
+            </a>
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
-};
-
-export default SignUp;
+}

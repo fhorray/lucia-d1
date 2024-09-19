@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,10 @@ import { Label } from "@/components/ui/label";
 
 interface FormValues {
   email: string;
-  password: string;
 }
 
 export default function Component() {
-  const route = useRouter();
+  // const route = useRouter();
 
   const {
     register,
@@ -34,7 +33,7 @@ export default function Component() {
     console.log(data);
 
     try {
-      const response = await fetch("http://localhost:3001/v1/auth/login", {
+      const response = await fetch("http://localhost:3001/v1/auth/magic", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -47,10 +46,7 @@ export default function Component() {
         throw new Error("Erro ao fazer login");
       }
 
-      route.push("/");
-
-      const result = await response.json();
-      console.log("Login realizado com sucesso:", result);
+      console.log("Link enviado no email");
     } catch (error) {
       console.error("Erro:", error);
     }
@@ -85,25 +81,6 @@ export default function Component() {
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password", {
-                  required: "Senha é obrigatória",
-                  minLength: {
-                    value: 3,
-                    message: "Senha deve ter no mínimo 6 caracteres",
-                  },
-                })}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
               )}
             </div>
             <Button type="submit" className="w-full">

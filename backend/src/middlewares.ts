@@ -3,7 +3,6 @@ import { createLucia } from "./lib/lucia";
 import { getCookie } from "hono/cookie";
 
 export const autMiddleware = async (c: Context, next: Next) => {
-  console.log("RODOU MIDLEWARE");
   const lucia = createLucia(c.env.DB);
 
   const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;
