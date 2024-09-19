@@ -14,13 +14,17 @@ import {
 } from "arctic";
 
 import { generateIdFromEntropySize } from "lucia";
-import { serializeCookie, parseCookies } from "oslo/cookie";
-import { getCookie, setCookie } from "hono/cookie";
+import { parseCookies } from "oslo/cookie";
+import { setCookie } from "hono/cookie";
 import { users, verificationTokens } from "../db/schemas";
 import { eq } from "drizzle-orm";
 import { createResend } from "../lib/resend";
 import * as jose from "jose";
 import { createJWT, verifyJWT } from "../functions/jose";
+import MagicLink from "../emails/magic-link";
+
+import ReactDOMServer from "react-dom/server";
+import { render } from "@react-email/components";
 
 const authRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
@@ -148,7 +152,8 @@ authRouter.post(
       from: "Psycopoint <no-reply@psycohub.com>",
       to: [email],
       subject: "Faça login",
-      html: `<strong>Clique aqui para fazer login:</strong> <a href="${url}" target="_blank"><button>FAZER LOGIN</button></a>`,
+      // html: `<strong>Clique aqui para fazer login:</strong> <a href="${url}" target="_blank"><button>FAZER LOGIN</button></a>`,
+      react: MagicLink({ linkUrl: url, loginCode: "123" }),
     });
 
     return c.json({}, 200);
@@ -230,7 +235,7 @@ authRouter.get("/google", async (c) => {
     path: "/",
   });
 
-  return c.redirect(url.toString());
+  return c.redirect(`${url.toString()}&prompt=select_account`);
 });
 
 authRouter.get("/callback/google", async (c) => {

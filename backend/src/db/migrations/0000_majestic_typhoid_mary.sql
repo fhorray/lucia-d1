@@ -23,5 +23,12 @@ CREATE TABLE `users` (
 	`nickname` text
 );
 --> statement-breakpoint
+CREATE TABLE `verification_tokens` (
+	`identifier` text NOT NULL,
+	`token` text NOT NULL,
+	`expires` integer NOT NULL,
+	PRIMARY KEY(`identifier`, `token`)
+);
+--> statement-breakpoint
 CREATE UNIQUE INDEX `users_google_id_unique` ON `users` (`google_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);

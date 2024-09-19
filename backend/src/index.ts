@@ -9,6 +9,7 @@ import posts from "./routes/posts";
 import usersRoute from "./routes/users";
 import { cors } from "hono/cors";
 import { autMiddleware } from "./middlewares";
+import { reactRenderer } from "@hono/react-renderer";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath(
   "/v1"
